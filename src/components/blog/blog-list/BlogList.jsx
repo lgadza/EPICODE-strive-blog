@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Col, Row } from "react-bootstrap";
+// import posts from "../../../data/posts.json";
 import BlogItem from "../blog-item/BlogItem";
+import { useState, useEffect } from "react";
 
 const BlogList = (props) => {
   const [posts, setPosts] = useState();
@@ -9,12 +11,12 @@ const BlogList = (props) => {
   }, []);
   let getPosts = async () => {
     try {
-      const response = await fetch("http://localhost:3001/blogs");
+      const URL = process.env.REACT_APP_BE_DEV_URL;
+      const response = await fetch(`${URL}/blogPosts`);
       if (response.ok) {
         const data = await response.json();
         setPosts(data);
-      } else {
-        throw new Error("AAAAAAAA");
+        console.log(data);
       }
     } catch (error) {
       console.log(error);
@@ -22,19 +24,19 @@ const BlogList = (props) => {
   };
   return (
     <Row>
-      {posts ? (
-        posts.map((post) => (
-          <Col
-            md={4}
-            style={{
-              marginBottom: 50,
-            }}
-          >
-            <BlogItem key={post.title} {...post} />
-          </Col>
-        ))
-      ) : (
-        <div></div>
+      {posts && (
+        <Row>
+          {posts.map((post) => (
+            <Col
+              md={4}
+              style={{
+                marginBottom: 50,
+              }}
+            >
+              <BlogItem key={post.title} {...post} />
+            </Col>
+          ))}
+        </Row>
       )}
     </Row>
   );
